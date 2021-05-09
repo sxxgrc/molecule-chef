@@ -1,7 +1,7 @@
 """ WAE optimize locally based on property predictor network.
 
 Usage:
-  wae_latent_space_optimize.py <input_weights>
+  run_local_latent_search.py <input_weights>
 
 
 """
