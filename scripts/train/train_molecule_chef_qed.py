@@ -243,7 +243,9 @@ def save_checkpoint(state, is_best, filename=None):
         shutil.copyfile(filename, 'model_best.pth.pick')
 
 
-def train_molecule_chef_qed_hiv(params: Params, property_predictor):
+def train_molecule_chef_qed_hiv(property_predictor):
+    params = Params()
+
     # Set the random seeds.
     rng = np.random.RandomState(5156416)
     torch.manual_seed(rng.choice(1000000))
