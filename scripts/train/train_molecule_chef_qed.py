@@ -73,7 +73,7 @@ def get_train_and_val_product_property_datasets(params: Params, property_predict
     def transform_text_to_predictions(text_line, predictor):
         molecules = [rdkit_general_ops.get_molecule(mol_str, kekulize=False) for mol_str in text_line.split('.')]
         qed_scores = [QED.qed(mol) for mol in molecules]
-        property_predictions = [predictor(mol) for mol in molecules]
+        property_predictions = [predictor(mol_str) for mol_str in text_line.split('.')]
         # May have many products so take max (given this is what we are optimising for in the optimisation part).
         # Expect this to be less of an issue in practice as USPTO mostly details
         # single product reactions. It may be interesting to look at using the Molecular Transformer prediction on
