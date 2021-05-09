@@ -71,7 +71,7 @@ def get_train_and_val_product_property_datasets(params: Params, property_predict
     ]
 
     def property_prediction(predictor, predictor_label_to_optimize, mol_str):
-        value = predictor(mol_str)
+        value = predictor.predict(mol_str)
         return value if predictor_label_to_optimize == 1 else (1 - value)
 
     def transform_text_to_predictions(text_line, predict_func, predictor, predictor_label_to_optimize):
