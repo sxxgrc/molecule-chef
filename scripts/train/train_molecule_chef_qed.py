@@ -79,13 +79,18 @@ def get_train_and_val_product_property_datasets(params: Params, property_predict
         # these reactions rather than this ground truth and other ways of combining multiple products eg mean.
         return np.max(qed_scores)
 
+    def transform_text_to_property_prediction(text_line, predictor):
+        molecules = [rdkit_general_ops.get_molecule(mol_str, kekulize=False) for mol_str in text_line.split('.')]
+        property_predictions = [predictor(mol) for mol in molecules]
+        return np.max(property_predictions)
+
     dataset_out = []
     print("Creating property datasets.")
     for path_ in tqdm.tqdm(product_paths):
         with open(path_, 'r') as fo:
             lines = [x.strip() for x in fo.readlines()]
 
-        data_all = [(transform_text_to_qed(l_), property_predictor(l_)) 
+        data_all = [(transform_text_to_qed(l_), transform_text_to_property_prediction(l_, property_predictor)) 
                     for l_ in tqdm.tqdm(lines, desc=f"Processing ...{path_[-20:]}", leave=False)]
 
         all_array = torch.tensor(data_all)
