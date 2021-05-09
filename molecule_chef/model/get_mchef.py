@@ -37,7 +37,7 @@ class MChefParams:
     embedding_dim = 50
 
     # Property specific
-    property_dim:int = 1
+    property_dim:int = 2
 
     # Decoder Specific
     decd_layers: int = 2

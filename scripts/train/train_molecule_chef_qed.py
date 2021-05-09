@@ -30,7 +30,6 @@ from molecule_chef.model import get_mchef
 from molecule_chef.script_helpers.eval_code import evaluate_reconstruction_accuracy
 from molecule_chef.script_helpers import tensorboard_helper as tb_
 
-
 TB_LOGS_FILE = 'tb_logs'
 CHKPT_FOLDER = 'chkpts'
 
@@ -64,7 +63,7 @@ class Params(object):
         self.latent_dim = 25
 
 
-def get_train_and_val_product_property_datasets(params: Params):
+def get_train_and_val_product_property_datasets(params: Params, property_predictor):
 
     product_paths = [
         params.path_products_train,
@@ -86,7 +85,8 @@ def get_train_and_val_product_property_datasets(params: Params):
         with open(path_, 'r') as fo:
             lines = [x.strip() for x in fo.readlines()]
 
-        data_all = [transform_text_to_qed(l_) for l_ in tqdm.tqdm(lines, desc=f"Processing ...{path_[-20:]}", leave=False)]
+        data_all = [(transform_text_to_qed(l_), property_predictor(l_)) 
+                    for l_ in tqdm.tqdm(lines, desc=f"Processing ...{path_[-20:]}", leave=False)]
 
         all_array = torch.tensor(data_all)
         dataset_out.append(data.TensorDataset(all_array))
@@ -243,14 +243,14 @@ def save_checkpoint(state, is_best, filename=None):
         shutil.copyfile(filename, 'model_best.pth.pick')
 
 
-def main(params: Params):
+def train_molecule_chef_qed_hiv(params: Params, property_predictor):
     # Set the random seeds.
     rng = np.random.RandomState(5156416)
     torch.manual_seed(rng.choice(1000000))
 
     # Set up data
     # == The property data
-    train_prop_dataset, val_prop_dataset = get_train_and_val_product_property_datasets(params)
+    train_prop_dataset, val_prop_dataset = get_train_and_val_product_property_datasets(params, property_predictor)
     print("Created property datasets!")
 
     # == The sequence data
@@ -346,8 +346,4 @@ def main(params: Params):
             lr_scheduler.step()
             print(optimizer)
         print(f"==========================================================================================")
-
-
-if __name__ == '__main__':
-    main(Params())
 

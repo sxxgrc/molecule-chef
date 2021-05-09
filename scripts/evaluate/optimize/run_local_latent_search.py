@@ -68,7 +68,7 @@ class LocalSearchRunner:
         initial_z_np = initial_z.cpu().numpy()
         assert initial_z_np.shape[0] == 1, "should have batch on leading dimension"
         all_zs = [initial_z_np]
-        all_val_preds = [self.nn_predictor(initial_z).item()]
+        all_val_preds = [self.nn_predictor(initial_z).tolist()]
         all_reactant_strings = self.go_from_batched_zs_to_predicted_products(initial_z)
 
         last_z = initial_z
