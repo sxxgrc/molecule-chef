@@ -219,6 +219,5 @@ def main(params: Params):
                     f" {mchef_config.get_processed_data_dir()}/{datetime.datetime.now().isoformat()}_data_checklist.sha256"),
                    shell=True)
 
-
 if __name__ == '__main__':
     main(Params())

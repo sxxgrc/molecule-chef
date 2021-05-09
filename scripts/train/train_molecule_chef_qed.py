@@ -91,9 +91,8 @@ def get_train_and_val_product_property_datasets(params: Params, property_predict
         with open(path_, 'r') as fo:
             lines = [x.strip() for x in fo.readlines()]
 
-        data_all = [transform_text_to_predictions(l_, property_prediction, property_predictor, 
-                    predictor_label_to_optimize) for l_ in tqdm.tqdm(lines, 
-                    desc=f"Processing ...{path_[-20:]}", leave=False)]
+        data_all = [transform_text_to_predictions(l_, property_prediction, property_predictor, predictor_label_to_optimize) 
+                    for l_ in tqdm.tqdm(lines, desc=f"Processing ...{path_[-20:]}", leave=False)]
 
         all_array = torch.tensor(data_all)
         dataset_out.append(data.TensorDataset(all_array))
