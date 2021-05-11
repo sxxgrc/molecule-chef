@@ -2,6 +2,7 @@
 import time
 import os
 from os import path
+from pathlib import Path
 import datetime
 import shutil
 
@@ -31,7 +32,7 @@ from molecule_chef.script_helpers.eval_code import evaluate_reconstruction_accur
 from molecule_chef.script_helpers import tensorboard_helper as tb_
 
 TB_LOGS_FILE = 'tb_logs'
-CHKPT_FOLDER = 'chkpts'
+CHKPT_FOLDER = str(Path(__file__).parent.absolute()) + '/chkpts'
 
 
 class Params(object):
@@ -56,7 +57,7 @@ class Params(object):
         self.lr_reduction_interval = 40
         self.lr_reduction_factor = 0.1
 
-        self.cuda_details = gnn_utils.CudaDetails(use_cuda=torch.cuda.is_available())
+        self.cuda_details = gnn_utils.CudaDetails(use_cuda=torch.cuda.is_available(), gpu_id=0)
 
         self.lambda_value = 10.  # see WAE paper, section 4
         self.property_pred_factor = 50.
@@ -94,7 +95,7 @@ def get_train_and_val_product_property_datasets(params: Params, property_predict
         data_all = [transform_text_to_predictions(l_, property_prediction, property_predictor, predictor_label_to_optimize) 
                     for l_ in tqdm.tqdm(lines, desc=f"Processing ...{path_[-20:]}", leave=False)]
 
-        all_array = torch.tensor(data_all)
+        all_array = torch.tensor(data_all, dtype=torch.float)
         dataset_out.append(data.TensorDataset(all_array))
     return tuple(dataset_out)
 
@@ -246,7 +247,7 @@ def collate_datasets_func(batch):
 def save_checkpoint(state, is_best, filename=None):
     torch.save(state, filename)
     if is_best:
-        shutil.copyfile(filename, 'model_best.pth.pick')
+        shutil.copyfile(filename, 'molecule_chef_model_best.pth.pick')
 
 
 """

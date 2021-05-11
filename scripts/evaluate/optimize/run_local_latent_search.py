@@ -1,7 +1,7 @@
 """ WAE optimize locally based on property predictor network.
 
 Usage:
-  run_local_latent_search.py <input_weights>
+  run_local_latent_search.py <input_weights> <tokenized_reactants_path>
 
 
 """
@@ -43,6 +43,7 @@ class Params:
         # Command line arguments.
         arguments = docopt(__doc__)
         self.weights_to_use = arguments['<input_weights>']
+        self.output_path = arguments['<tokenized_reactants_path>']
 
 
 class LocalSearchRunner:
@@ -186,7 +187,7 @@ def main(params: Params):
             all_reactant_bags.update(reactant_strs)  # as defined reactants should already be in canonical form.
 
     tokenized_sampled_reactants = [mt.tokenization(smi_str) for smi_str in all_reactant_bags if len(smi_str)]
-    with open("opt.tokenized-reactant.txt", 'w') as fo:
+    with open(self.output_path, 'w') as fo:
         fo.writelines('\n'.join(tokenized_sampled_reactants))
 
 
