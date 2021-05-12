@@ -163,9 +163,7 @@ def main(params: Params):
     # == Now we shall run the optimization for each of these z samples  ==
     results = collections.defaultdict(list)
 
-    searches = [('random_search',
-                 LocalSearchRunner(True, molchef_wae.prop_predictor_, molchef_wae, seq_to_smi_list, params)),
-                ('prop_opt',
+    searches = [('prop_opt',
                  LocalSearchRunner(False, molchef_wae.prop_predictor_, molchef_wae, seq_to_smi_list, params))]
 
     for search_name, searcher in searches:
